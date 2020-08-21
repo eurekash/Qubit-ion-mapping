@@ -66,7 +66,7 @@ Note that the ions are labeled from `0` to `n-1`, while the qubits are labeled f
 
 The first line of the output is the optimal total cost (I assume that the total cost is the sum of the cost of each gate).
 
-The second line consists of `m` numbers, the $i$-th number is the ion index of qubit $i$.
+The second line consists of `m` numbers, the `i`-th number is the ion index of qubit `i`.
 
 ## Sample Output
 
