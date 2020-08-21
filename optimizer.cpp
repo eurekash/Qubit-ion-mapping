@@ -3,6 +3,8 @@
 #include <utility>
 #include <string>
 #include <tuple>
+#include <ctime>
+#include <cstdlib>
 
 using std::priority_queue;
 using std::pair;
@@ -18,13 +20,15 @@ double avg_cost[maxn];
 double min_cost = 1.0;
 int ions[maxn];
 
-
 int m;  //number of qubits
 int p;  //number of edges
 int ngates[maxm][maxm];
 int ngates_total = 0;
 int degree[maxm];
 int qubits[maxm];
+
+double time_limit;
+double time_start;
 
 struct node {
 	int v;
@@ -105,6 +109,14 @@ void reorder_qubits() {
 }
 
 void search(int depth, double cost_temp) {
+	double current_time = clock();
+
+	if ((current_time - time_start) / CLOCKS_PER_SEC > time_limit) {
+		printf("%.6lf\n", optimal_cost + min_cost * ngates_total);
+		for (int i = 0; i < m; i++)  printf("%d ", optimal_mapping[i]);
+		puts("");
+		exit(0);
+	}
 	double heuristic = 0.0;
 
 	//the lower bound of weights between {qubits[0], ..., qubits[depth-1]} and {qubits[depth], ..., qubits[m-1]}
@@ -123,7 +135,6 @@ void search(int depth, double cost_temp) {
 	++counter;
 	if (depth == m) {
 		optimal_cost = cost_temp;
-		printf("%.6f\n", optimal_cost);
 		memcpy(optimal_mapping, mapping, sizeof(int) * m);
 		return ;
 	}
@@ -161,6 +172,7 @@ void search(int depth, double cost_temp) {
 
 int main(int argc, char *argv[]) {
 	fin = fopen(argv[1], "r");
+	sscanf(argv[2], "%lf", &time_limit);
 	fscanf(fin, "%d", &n);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
@@ -184,12 +196,12 @@ int main(int argc, char *argv[]) {
 	reorder_qubits();
 	build_ion_list();
 
+	time_start = clock();
 	search(0, 0.0);
 
 	printf("%.6lf\n", optimal_cost + min_cost * ngates_total);
 	for (int i = 0; i < m; i++)  printf("%d ", optimal_mapping[i]);
 	puts("");
-	printf("counter = %d\n", counter);
 
 	return 0;
 }
