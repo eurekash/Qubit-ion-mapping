@@ -26,6 +26,7 @@ int ngates[maxm][maxm];
 int ngates_total = 0;
 int degree[maxm];
 int qubits[maxm];
+int type[maxm];
 
 double time_limit;
 double time_start;
@@ -108,7 +109,7 @@ void reorder_qubits() {
 	}
 }
 
-void search(int depth, double cost_temp) {
+void search(int depth, double cost_temp, int right_most_data, int left_most_ancilla) {
 	double current_time = clock();
 
 	if ((current_time - time_start) / CLOCKS_PER_SEC > time_limit) {
@@ -146,6 +147,9 @@ void search(int depth, double cost_temp) {
 	for (node *pt = head->right; pt != head; pt = pt->right) {
 		int &v = pt->v;
 
+		if (type[q] == 0 && v >= left_most_ancilla) continue;
+		if (type[q] == 1 && v <= right_most_data)  continue;
+
 		mapping[q] = v;
 		double increment = 0.0;
 
@@ -158,7 +162,11 @@ void search(int depth, double cost_temp) {
 				heur_mat[qi][pt2->v] += ngates[q][qi] * cost[v][pt2->v];
 			}	
 		}
-		search(depth+1, cost_temp + heur_mat[q][v]);
+
+		if (type[q] == 0) 
+			search(depth+1, cost_temp + heur_mat[q][v], std::max(right_most_data, v), left_most_ancilla);
+		else
+			search(depth+1, cost_temp + heur_mat[q][v], right_most_data, std::min(left_most_ancilla, v));
 
 		for (int i = depth+1; i < m; i++) {
 			int &qi = qubits[i];
@@ -183,7 +191,13 @@ int main(int argc, char *argv[]) {
 	}
 
 
-	fscanf(fin, "%d%d", &m, &p);
+	fscanf(fin, "%d", &m);
+	for (int i=0; i<m; i++) {
+		fscanf(fin, "%d", type+i);
+	}
+
+	fscanf(fin, "%d", &p);
+
 	for (int i = 0; i < p; i++) {
 		int u, v, w;
 		fscanf(fin, "%d%d%d", &u, &v, &w);
@@ -192,12 +206,13 @@ int main(int argc, char *argv[]) {
 		degree[v] ++;
 		ngates_total += w;
 	}
+	
 
 	reorder_qubits();
 	build_ion_list();
 
 	time_start = clock();
-	search(0, 0.0);
+	search(0, 0.0, -1, n);
 
 	printf("%.6lf\n", optimal_cost + min_cost * ngates_total);
 	for (int i = 0; i < m; i++)  printf("%d ", optimal_mapping[i]);
