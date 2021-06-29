@@ -63,7 +63,7 @@ Note that the ions are labeled from `0` to `n-1`, while the qubits are labeled f
 0 6 1
 0 7 1
 1 2 1
-1 3 1 
+1 3 1
 1 4 1
 1 5 1
 1 6 1
@@ -80,6 +80,6 @@ The second line consists of `m` numbers, the `i`-th number is the ion index of q
 
 ```
 1.086696
-0 1 4 3 7 9 11 12 
+0 1 4 3 7 9 11 12
 ```
 
