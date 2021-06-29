@@ -1,10 +1,12 @@
+#include <algorithm>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <queue>
 #include <utility>
 #include <string>
 #include <tuple>
-#include <ctime>
-#include <cstdlib>
 
 using std::priority_queue;
 using std::pair;
