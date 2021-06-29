@@ -160,10 +160,10 @@ void search(int depth, double cost_temp, int right_most_data, int left_most_anci
 			int &qi = qubits[i];
 			for (node *pt2 = head->right; pt2 != head; pt2 = pt2->right) {
 				heur_mat[qi][pt2->v] += ngates[q][qi] * cost[v][pt2->v];
-			}	
+			}
 		}
 
-		if (type[q] == 0) 
+		if (type[q] == 0)
 			search(depth+1, cost_temp + heur_mat[q][v], std::max(right_most_data, v), left_most_ancilla);
 		else
 			search(depth+1, cost_temp + heur_mat[q][v], right_most_data, std::min(left_most_ancilla, v));
@@ -172,7 +172,7 @@ void search(int depth, double cost_temp, int right_most_data, int left_most_anci
 			int &qi = qubits[i];
 			for (node *pt2 = head->right; pt2 != head; pt2 = pt2->right) {
 				heur_mat[qi][pt2->v] -= ngates[q][qi] * cost[v][pt2->v];
-			}	
+			}
 		}
 		pt->left->right = pt->right->left = pt;
 	}
@@ -206,7 +206,7 @@ int main(int argc, char *argv[]) {
 		degree[v] ++;
 		ngates_total += w;
 	}
-	
+
 
 	reorder_qubits();
 	build_ion_list();
